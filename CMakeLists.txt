@@ -138,6 +138,7 @@ endif()
 # Find BOOST (needed for DBoW2)
 find_package(Boost 1.46 REQUIRED COMPONENTS system serialization)
 include_directories(${Boost_INCLUDE_DIRS})
+target_link_directories(${PROJECT_NAME} PUBLIC ${Boost_LIBRARY_DIRS})
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
