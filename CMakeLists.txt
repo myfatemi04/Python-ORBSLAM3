@@ -44,27 +44,15 @@ MESSAGE(${OpenCV_VERSION})
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(realsense2)
 
-# find_package(Pangolin REQUIRED)
-# message(STATUS "pangolin include dir: ${Pangolin_INCLUDE_DIRS}")
-# set(Pangolin_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/Thirdparty/Pangolin/install/include)
-# add_subdirectory(Thirdparty/Pangolin)
 add_subdirectory(Thirdparty/DBoW2)
 add_subdirectory(Thirdparty/g2o)
 add_subdirectory(Thirdparty/Sophus)
-find_package(GLEW REQUIRED)
-if(NOT GLEW_FOUND)
-    message(FATAL_ERROR "GLEW not found.")
-else()
-    message(STATUS "GLEW found. Include dir: ${GLEW_INCLUDE_DIR}")
-endif()
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${PROJECT_SOURCE_DIR}/include/CameraModels
 ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-# ${PROJECT_SOURCE_DIR}/Thirdparty/Pangolin/install/include
-${GLEW_INCLUDE_DIR}
 ${EIGEN3_INCLUDE_DIR}
 )
 
