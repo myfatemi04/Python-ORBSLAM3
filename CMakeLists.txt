@@ -45,7 +45,7 @@ find_package(realsense2)
 # find_package(Pangolin REQUIRED)
 # message(STATUS "pangolin include dir: ${Pangolin_INCLUDE_DIRS}")
 # set(Pangolin_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/Thirdparty/Pangolin/install/include)
-add_subdirectory(Thirdparty/Pangolin)
+# add_subdirectory(Thirdparty/Pangolin)
 add_subdirectory(Thirdparty/DBoW2)
 add_subdirectory(Thirdparty/g2o)
 add_subdirectory(Thirdparty/Sophus)
@@ -61,7 +61,7 @@ ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${PROJECT_SOURCE_DIR}/include/CameraModels
 ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-${PROJECT_SOURCE_DIR}/Thirdparty/Pangolin/install/include
+# ${PROJECT_SOURCE_DIR}/Thirdparty/Pangolin/install/include
 ${GLEW_INCLUDE_DIR}
 ${EIGEN3_INCLUDE_DIR}
 )
@@ -81,12 +81,12 @@ src/MapPoint.cc
 src/KeyFrame.cc
 src/Atlas.cc
 src/Map.cc
-src/MapDrawer.cc
+# src/MapDrawer.cc
 src/Optimizer.cc
 src/Frame.cc
 src/KeyFrameDatabase.cc
 src/Sim3Solver.cc
-src/Viewer.cc
+# src/Viewer.cc
 src/ImuTypes.cc
 src/G2oTypes.cc
 src/CameraModels/Pinhole.cpp
@@ -109,12 +109,12 @@ include/MapPoint.h
 include/KeyFrame.h
 include/Atlas.h
 include/Map.h
-include/MapDrawer.h
+# include/MapDrawer.h
 include/Optimizer.h
 include/Frame.h
 include/KeyFrameDatabase.h
 include/Sim3Solver.h
-include/Viewer.h
+# include/Viewer.h
 include/ImuTypes.h
 include/G2oTypes.h
 include/CameraModels/GeometricCamera.h
@@ -142,7 +142,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
-${Pangolin_LIBRARIES}
+# ${Pangolin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.${LINK_LIBRARIES_EXTENSION}
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.${LINK_LIBRARIES_EXTENSION}
 -lboost_serialization
