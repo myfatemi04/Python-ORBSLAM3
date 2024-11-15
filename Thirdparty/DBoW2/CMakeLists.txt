@@ -28,7 +28,7 @@ set(SRCS_DUTILS
   DUtils/Random.cpp
   DUtils/Timestamp.cpp)
 
-
+# Find OpenCV
 find_package(OpenCV 4 QUIET)
 if(NOT OpenCV_FOUND)
    find_package(OpenCV 3.0 QUIET)
@@ -36,6 +36,10 @@ if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV > 3.0 not found.")
    endif()
 endif()
+
+# Find BOOST
+find_package(Boost 1.46 REQUIRED COMPONENTS system serialization)
+include_directories(${Boost_INCLUDE_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
