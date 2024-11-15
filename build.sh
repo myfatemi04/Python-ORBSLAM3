@@ -1,40 +1,48 @@
-echo "Configuring and building Thirdparty/DBoW2 ..."
+if [ which ninja ]; then
+	NINJA_GENERATOR="-GNinja"
+	echo "Using Ninja build generator for faster builds."
+fi
 
-cd Thirdparty/DBoW2
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF $NINJA_GENERATOR
+cmake --build build
 
-cd ../../g2o
+# echo "Configuring and building Thirdparty/DBoW2 ..."
 
-echo "Configuring and building Thirdparty/g2o ..."
+# cd Thirdparty/DBoW2
+# mkdir build
+# cd build
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# make -j
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+# cd ../../g2o
 
-cd ../../Sophus
+# echo "Configuring and building Thirdparty/g2o ..."
 
-echo "Configuring and building Thirdparty/Sophus ..."
+# mkdir build
+# cd build
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# make -j
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j
+# cd ../../Sophus
 
-cd ../../../
+# echo "Configuring and building Thirdparty/Sophus ..."
 
-echo "Uncompress vocabulary ..."
+# mkdir build
+# cd build
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# make -j
 
-cd Vocabulary
-tar -xf ORBvoc.txt.tar.gz
-cd ..
+# cd ../../../
 
-echo "Configuring and building ORB_SLAM3 ..."
+# echo "Uncompress vocabulary ..."
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j4
+# cd Vocabulary
+# tar -xf ORBvoc.txt.tar.gz
+# cd ..
+
+# echo "Configuring and building ORB_SLAM3 ..."
+
+# mkdir build
+# cd build
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# make -j4
