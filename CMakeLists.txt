@@ -20,23 +20,24 @@ option(BUILD_EXAMPLES "Build examples" ON)
 
 # Check CXX14 support.
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-   # This is only for the "Examples/" folder.
-   add_definitions(-DCOMPILEDWITHC11)
-   set(CMAKE_CXX_STANDARD 11)
-   message(STATUS "Using flag -std=c++11.")
-else()
-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+
+# Require C++14.
+CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX11)
+if(NOT COMPILER_SUPPORTS_CXX11)
+   message(FATAL_ERROR "Requires c++14 to compile.")
 endif()
 
-LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
+# Configure to use C++14.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+add_definitions(-DCOMPILEDWITHC11) # This is only for the "Examples/" folder...
+set(CMAKE_CXX_STANDARD 14)
+message(STATUS "Using flag -std=c++14.")
 
+# Find OpenCV.
 find_package(OpenCV 4.4)
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 4.4 not found.")
-   endif()
+if(NOT OpenCV_FOUND)
+   message(FATAL_ERROR "OpenCV > 4.4 not found.")
+endif()
 
 MESSAGE("OPENCV VERSION:")
 MESSAGE(${OpenCV_VERSION})
@@ -57,6 +58,11 @@ ${EIGEN3_INCLUDE_DIR}
 )
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/lib)
+if (APPLE)
+   set(CMAKE_MACOSX_RPATH 1)
+endif()
+
 
 add_library(${PROJECT_NAME} SHARED
 src/System.cc
@@ -129,16 +135,29 @@ endif()
 find_package(Boost 1.46 REQUIRED COMPONENTS system serialization)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${Boost_LIBRARY_DIRS})
+target_link_directories(
+        ${PROJECT_NAME} PUBLIC
+        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib
+        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib
+)
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
-# ${Pangolin_LIBRARIES}
-${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.${LINK_LIBRARIES_EXTENSION}
-${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.${LINK_LIBRARIES_EXTENSION}
+-lDBoW2 # ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.${LINK_LIBRARIES_EXTENSION}
+-lg2o # ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.${LINK_LIBRARIES_EXTENSION}
 -lboost_serialization
 -lcrypto
 )
+
+##### PYTHON BINDINGS #####
+find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+find_package(pybind11 CONFIG REQUIRED)
+python_add_library(_C ${PROJECT_SOURCE_DIR}/src/python_bindings/bindings.cc)
+target_link_libraries(_C PRIVATE ${PROJECT_NAME} pybind11::headers)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION ${PROJECT_SOURCE_DIR}/pyorbslam3)
+install(TARGETS _C DESTINATION ${PROJECT_SOURCE_DIR}/pyorbslam3)
 
 # If RealSense SDK is found the library is added and its examples compiled
 if(realsense2_FOUND)

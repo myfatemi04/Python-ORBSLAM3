@@ -1,11 +1,13 @@
 # Ignore all
-*
+# *
 
 # Unignore all with extensions
-!*.*
+# !*.*
 
 # Unignore all dirs
-!*/
+# !*/
+
+.vscode
 
 CMakeLists.txt.user
 CMakeLists_modified.txt
