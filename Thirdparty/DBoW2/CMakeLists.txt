@@ -41,9 +41,10 @@ endif()
 find_package(Boost 1.46 REQUIRED COMPONENTS system serialization)
 include_directories(${Boost_INCLUDE_DIRS})
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
 include_directories(${OpenCV_INCLUDE_DIRS})
 add_library(DBoW2 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
 target_link_libraries(DBoW2 ${OpenCV_LIBS})
 
+if(APPLE)
+  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 1)
+endif()

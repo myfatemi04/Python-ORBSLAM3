@@ -57,8 +57,10 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
 ${EIGEN3_INCLUDE_DIR}
 )
 
+##### Sets where the libraries go once they are generated at build time. #####
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
+
 if (APPLE)
    set(CMAKE_MACOSX_RPATH 1)
 endif()
@@ -124,6 +126,10 @@ include/SerializationUtils.h
 include/Config.h
 include/Settings.h)
 
+set_target_properties(
+   ${PROJECT_NAME} PROPERTIES CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -Wno-unused-variable -Wno-unused-but-set-variable -Wno-reorder-ctor"
+)
+
 # Change file extension if using mac.
 if(APPLE)
     set(LINK_LIBRARIES_EXTENSION "dylib")
@@ -136,18 +142,18 @@ find_package(Boost 1.46 REQUIRED COMPONENTS system serialization)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_directories(${PROJECT_NAME} PUBLIC ${Boost_LIBRARY_DIRS})
 target_link_directories(
-        ${PROJECT_NAME} PUBLIC
-        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib
-        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib
+   ${PROJECT_NAME} PUBLIC
+   ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib
+   ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib
 )
 
 target_link_libraries(${PROJECT_NAME}
-${OpenCV_LIBS}
-${EIGEN3_LIBS}
--lDBoW2 # ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.${LINK_LIBRARIES_EXTENSION}
--lg2o # ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.${LINK_LIBRARIES_EXTENSION}
--lboost_serialization
--lcrypto
+   ${OpenCV_LIBS}
+   ${EIGEN3_LIBS}
+   -lDBoW2
+   -lg2o
+   -lboost_serialization
+   -lcrypto
 )
 
 ##### PYTHON BINDINGS #####
@@ -156,17 +162,32 @@ find_package(pybind11 CONFIG REQUIRED)
 python_add_library(_C ${PROJECT_SOURCE_DIR}/src/python_bindings/bindings.cc)
 target_link_libraries(_C PRIVATE ${PROJECT_NAME} pybind11::headers)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION ${PROJECT_SOURCE_DIR}/pyorbslam3)
-install(TARGETS _C DESTINATION ${PROJECT_SOURCE_DIR}/pyorbslam3)
+##### INSTALLING LIBRARIES #####
+
+# Set the "RPATH" for the installed libraries.
+# set(CMAKE_INSTALL_RPATH .)
+# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# 1. ORB-SLAM3
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+# 2. Python bindings
+install(TARGETS _C DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+install(TARGETS DBoW2 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(TARGETS g2o DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # If RealSense SDK is found the library is added and its examples compiled
 if(realsense2_FOUND)
-    include_directories(${PROJECT_NAME}
-    ${realsense_INCLUDE_DIR}
-    )
-    target_link_libraries(${PROJECT_NAME}
-    ${realsense2_LIBRARY}
-    )
+   include_directories(${PROJECT_NAME}
+      ${realsense_INCLUDE_DIR}
+   )
+   target_link_libraries(${PROJECT_NAME}
+      ${realsense2_LIBRARY}
+   )
 endif()
 
 

@@ -176,3 +176,8 @@ g2o/stuff/string_tools.cpp
 g2o/stuff/property.cpp       
 g2o/stuff/property.h       
 )
+
+
+if(APPLE)
+  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_RPATH 1)
+endif()

@@ -1,10 +1,6 @@
 # NEW
 
-Run two commands in the root of this directory.
-```
-cmake -B build -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF
-cmake --build build
-```
+Run the `build.sh` file. This will generate libraries and place them in the `lib` folder.
 
 # OLD
 

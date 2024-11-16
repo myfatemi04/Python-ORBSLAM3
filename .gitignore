@@ -7,6 +7,8 @@
 # Unignore all dirs
 # !*/
 
+install
+
 .vscode
 
 CMakeLists.txt.user
