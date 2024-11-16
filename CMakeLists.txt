@@ -150,8 +150,8 @@ target_link_directories(
 target_link_libraries(${PROJECT_NAME}
    ${OpenCV_LIBS}
    ${EIGEN3_LIBS}
-   -lDBoW2
-   -lg2o
+   DBoW2
+   g2o
    -lboost_serialization
    -lcrypto
 )
